@@ -1,5 +1,7 @@
 import { useState } from "react"
-import { Container, Typography, Paper } from '@mui/material' 
+import { Container, Typography, Paper, Fab, Box } from '@mui/material'
+import Add from '@mui/icons-material/Add';
+import PersonForm from "./components/PersonForm"; 
 import './App.css'
 import PersonList from "./components/PersonList";
 import PersonSearch from "./components/PersonSearch";
@@ -26,8 +28,17 @@ const initialPersons = [
 ]; 
 
 function App() {
-  const [persons, setPersons] = useState(initialPersons)
-  const [searchValue, setSearchValue] = useState("")
+  const [persons, setPersons] = useState(initialPersons);
+  const [searchValue, setSearchValue] = useState("");
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const handleAddPerson = (PersonData) => {
+    const newPerson = {
+      ...PersonData,
+      id: Date.now(),
+    };
+    setPersons([...persons, newPerson]);
+  };
 
   const handleDeletePerson = (idDeSters) => {
     if(window.confirm("Are you sure you want to delete this person?")){
@@ -47,7 +58,7 @@ function App() {
 
   return (
     <>
-      <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
         <Paper elevation={3} sx={{ p: 4, bgcolor: '#f5f5f5f5', minHeight: '80vh' }}>
           <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
             Person Manager
@@ -62,16 +73,34 @@ function App() {
             onDelete={handleDeletePerson} 
           />
 
+          <PersonForm 
+            open={isFormOpen} 
+            onClose={() => setIsFormOpen(false)} 
+            onSubmit={handleAddPerson} 
+          />
+
           {persons.length === 0 && (
             <Typography align="center" sx={{ mt: 4, color: 'text.secondary' }}>
-              Nu există persoane în listă.
+              Nu există persoane în listă. Did you killed them all?
             </Typography>
           )}
 
         </Paper>
+        <Fab 
+          color="primary" 
+          aria-label="add"
+          sx={{
+            position: 'fixed',
+            bottom: 32,
+            right: 32,
+          }}
+          onClick={() => setIsFormOpen(true)} 
+        >
+          <Add />
+        </Fab>
       </Container>
     </>
   )
 }
 
-export default App
+export default App;
