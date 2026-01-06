@@ -31,15 +31,35 @@ function App() {
   const [persons, setPersons] = useState(initialPersons);
   const [searchValue, setSearchValue] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [personToEdit, setPersonToEdit] = useState(null);
+
+  const handleOpenAddPerson = () => {
+    setPersonToEdit(null);
+    setIsFormOpen(true);
+  }
+
+  const handleEditPerson = (person) => {
+    setPersonToEdit(person);
+    setIsFormOpen(true);
+  }
 
   const handleAddPerson = (PersonData) => {
-    const newPerson = {
+    if(personToEdit){
+      const updatedPersons = persons.map(person => 
+        person.id === personToEdit.id ? { ...personToEdit, ...PersonData } : person
+      );
+      setPersons(updatedPersons);
+    }else{
+      const newPerson = {
       ...PersonData,
       id: Date.now(),
     };
     setPersons([...persons, newPerson]);
+    
+    }
+    setIsFormOpen(false);
+    setPersonToEdit(null);
   };
-
   const handleDeletePerson = (idDeSters) => {
     if(window.confirm("Are you sure you want to delete this person?")){
       const newPersonList = persons.filter(person => person.id !== idDeSters);
@@ -71,13 +91,16 @@ function App() {
           <PersonList 
             persons={filterPersons} 
             onDelete={handleDeletePerson} 
+            onEdit={handleEditPerson}
           />
 
           <PersonForm 
             open={isFormOpen} 
             onClose={() => setIsFormOpen(false)} 
             onSubmit={handleAddPerson} 
+            initialData={personToEdit}
           />
+          
 
           {persons.length === 0 && (
             <Typography align="center" sx={{ mt: 4, color: 'text.secondary' }}>
@@ -94,7 +117,7 @@ function App() {
             bottom: 32,
             right: 32,
           }}
-          onClick={() => setIsFormOpen(true)} 
+          onClick={handleOpenAddPerson}
         >
           <Add />
         </Fab>

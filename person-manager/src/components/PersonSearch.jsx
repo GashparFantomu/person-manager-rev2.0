@@ -19,7 +19,7 @@ const PersonSearch = ({searchValue, onChange}) => {
           </InputAdornment>
         ),
       }}
-    />);
+  />);
 };
 
 export default PersonSearch;

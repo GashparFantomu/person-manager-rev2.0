@@ -14,11 +14,11 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
-import { Delete, ContentCopy, Edit } from '@mui/icons-material';
+import { Delete, ContentCopy, Edit, Person } from '@mui/icons-material';
 
 
 
-const PersonList = ({persons, onDelete}) =>{
+const PersonList = ({persons, onDelete, onEdit}) =>{
   const [toastOpen, setToastOpen] = useState(false);
   const handleCopy = (person) =>{
     const text = `${person.nume}, ${person.cnp}, ${person.adresa}, ${person.serie}, ${person.nrBuletin}.`;
@@ -69,7 +69,7 @@ const PersonList = ({persons, onDelete}) =>{
                 </IconButton>
               </Tooltip>
 
-               <IconButton color="info">
+               <IconButton color="info" onClick={() => onEdit(person)}>
                   <Edit />
                 </IconButton>
 

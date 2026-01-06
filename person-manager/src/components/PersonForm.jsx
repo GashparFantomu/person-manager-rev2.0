@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Dialog, 
   DialogTitle, 
@@ -9,16 +9,29 @@ import {
   Grid 
 } from '@mui/material';
 
-const PersonForm = ({open, onClose, onSubmit}) => {
+const PersonForm = ({open, onClose, onSubmit, initialData}) => {
     const [formData, setFormData] = useState({
         nume: '',
         cnp: '',
         adresa: '',
         serie: '',
         nrBuletin: '',
-        poza: null
+        poza: null 
     });    
-
+    useEffect(() => {
+        if(initialData){
+            setFormData(initialData);
+        }else{
+            setFormData({
+                nume: '',
+                cnp: '',
+                adresa: '',
+                serie: '',
+                nrBuletin: '',
+                poza: null 
+            });
+          }
+        }, [initialData]);
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevData => ({...prevData, [name]: value}));
@@ -26,14 +39,14 @@ const PersonForm = ({open, onClose, onSubmit}) => {
 
     const handleSubmit = () => {
         onSubmit(formData);
-        setFormData({
-            nume: '',
-            cnp: '',
-            adresa: '',
-            serie: '',
-            nrBuletin: '',
-            poza: null
-        });
+        // setFormData({
+        //     nume: '',
+        //     cnp: '',
+        //     adresa: '',
+        //     serie: '',
+        //     nrBuletin: '',
+        //     poza: null
+        // });
         onClose();
     };
 
@@ -41,7 +54,7 @@ const PersonForm = ({open, onClose, onSubmit}) => {
     return (
         <>
 <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Adaugă Persoană Nouă</DialogTitle>
+      <DialogTitle>{initialData ? "Editează Persoană" : "Adaugă Persoană Nouă"}</DialogTitle>
       
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
@@ -103,7 +116,7 @@ const PersonForm = ({open, onClose, onSubmit}) => {
       <DialogActions>
         <Button onClick={onClose} color="error">Anulează</Button>
         <Button onClick={handleSubmit} variant="contained" color="primary">
-          Salvează
+          {initialData ? "Salvează Modificările" : "Adaugă Persoană"}
         </Button>
       </DialogActions>
     </Dialog>
