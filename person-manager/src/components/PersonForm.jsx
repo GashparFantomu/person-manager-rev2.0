@@ -6,8 +6,12 @@ import {
   DialogActions, 
   TextField, 
   Button, 
-  Grid 
+  Grid,
+  Avatar,
+  Box,
+  IconButton
 } from '@mui/material';
+import { CloudUpload, Delete } from '@mui/icons-material';
 
 const PersonForm = ({open, onClose, onSubmit, initialData}) => {
     const [formData, setFormData] = useState({
@@ -32,10 +36,13 @@ const PersonForm = ({open, onClose, onSubmit, initialData}) => {
             });
           }
         }, [initialData]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevData => ({...prevData, [name]: value}));
     };
+
+
 
     const handleSubmit = () => {
         onSubmit(formData);
@@ -50,14 +57,45 @@ const PersonForm = ({open, onClose, onSubmit, initialData}) => {
         onClose();
     };
 
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setFormData(prevData => ({ ...prevData, poza: reader.result }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    const handleRemoveImage = () => {
+        setFormData({ ...formData, poza: null });
+    };
+
     
     return (
-        <>
-<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <Dialog open={open} onClose={onClose}>
       <DialogTitle>{initialData ? "Editează Persoană" : "Adaugă Persoană Nouă"}</DialogTitle>
       
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
+          <Grid item xs = {12} display="flex" flexDirection="column" alignItems="center">
+            <Box position="relative">
+              <Avatar
+                src={formData.poza}
+                sx={{ width: 100, height: 100 }}
+              />
+              <IconButton size="small" color = "error" onClick={handleRemoveImage} sx={{ position: 'absolute', bottom: 0, right: 0 }}>
+                <Delete fontSize="small"/>  
+              </IconButton>
+            </Box>
+            <Button
+                component="label" variant="outlined" startIcon={<CloudUpload />} size="small">
+                Încarcă Poză
+                <input type="file" hidden accept="image/*" onChange={handleImageUpload} />
+            </Button>  
+          </Grid>
+          
+          
           <Grid item xs={12}>
             <TextField
               name="nume" 
@@ -119,8 +157,7 @@ const PersonForm = ({open, onClose, onSubmit, initialData}) => {
           {initialData ? "Salvează Modificările" : "Adaugă Persoană"}
         </Button>
       </DialogActions>
-    </Dialog>
-        </>
+        </Dialog>
     );
 }
 export default PersonForm;
