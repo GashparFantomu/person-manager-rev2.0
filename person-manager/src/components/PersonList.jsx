@@ -79,7 +79,7 @@ const PersonList = ({persons, onDelete, onEdit}) =>{
                 size="small" 
                 color="error" 
                 startIcon={<Delete />}
-                onClick={() => onDelete(person.id)}
+                onClick={() => onDelete(person._id)}
               >
                 Șterge
               </Button>

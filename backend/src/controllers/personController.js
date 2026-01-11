@@ -20,7 +20,35 @@ const createPerson = async (req, res) => {
     }
 };
 
+const deletePerson = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedPerson = await Person.findByIdAndDelete(id);
+        if (!deletedPerson) {
+            return res.status(404).json({ message: 'Persoana nu a fost găsita, he erased his trace (and his search history)' });
+        }
+        res.status(200).json({ message: 'Persoana a fost stearsa cu succes yay' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const updatePerson = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const updatedPerson = await Person.findByIdAndUpdate(id, req.body, { new: true });
+        if (!updatedPerson) {
+            return res.status(404).json({ message: 'Persoana nu a fost gasita pentru actualizare' });
+        }
+        res.status(200).json(updatedPerson);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getPersons,
-    createPerson
+    createPerson,
+    deletePerson,
+    updatePerson
 };

@@ -63,12 +63,18 @@ function App() {
   const handleAddPerson = async (PersonData) => {
     
     if(personToEdit){
-       const updatedPersons = persons.map(person => 
-        (person._id === personToEdit._id || person.id === personToEdit.id) ? { ...personToEdit, ...PersonData } : person
-      );
-      setPersons(updatedPersons);
-      setIsFormOpen(false);
-      setPersonToEdit(null);
+       try {
+        const response = await axios.put(`http://localhost:3000/api/persons/${personToEdit._id}`, PersonData);
+        const updatedPersonFromDB = response.data;
+        const updatedPersons = persons.map(person => 
+          person._id === updatedPersonFromDB._id ? updatedPersonFromDB : person
+        );
+        setPersons(updatedPersons);
+        setIsFormOpen(false);
+        setPersonToEdit(null);
+      } catch (err) {
+        alert("eroare la actualizare FMM ce dumniezo mai e acum? " + err.message);
+      }
     
     } else {
       try {
@@ -84,11 +90,15 @@ function App() {
     }
   };
 
-  const handleDeletePerson = (idDeSters) => {
+  const handleDeletePerson = async (idDeSters) => {
     if(window.confirm("Are you sure you want to delete this person?")){
-      const newPersonList = persons.filter(person => person._id !== idDeSters && person.id !== idDeSters);
-      setPersons(newPersonList)
-
+      try {
+        await axios.delete(`http://localhost:3000/api/persons/${idDeSters}`);
+        const newPersonList = persons.filter(person => person._id !== idDeSters);
+        setPersons(newPersonList)
+      } catch (error) {
+        console.error("vezi ca nu mere stergerea, nush de ce ->", error);
+      }
     }
   }
 
