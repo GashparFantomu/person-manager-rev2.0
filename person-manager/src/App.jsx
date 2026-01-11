@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Container, Typography, Paper, Fab, Box } from '@mui/material'
 import Add from '@mui/icons-material/Add';
 import axios from "axios";
@@ -102,14 +102,16 @@ function App() {
     }
   }
 
-  const filterPersons = persons.filter(person => {
-    if(searchValue === "") return true;
+const filterPersons = useMemo(() => {
+  return persons.filter(person => {
+    if (searchValue === "") return true;
     const term = searchValue.toLowerCase();
     return person.nume.toLowerCase().includes(term) ||
            person.cnp.includes(term) ||
            person.serie.toLowerCase().includes(term) ||
            person.nrBuletin.toLowerCase().includes(term);
   });
+}, [persons, searchValue]);
 
   return (
     <>
