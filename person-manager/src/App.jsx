@@ -1,37 +1,52 @@
 import { useState } from "react"
 import { Container, Typography, Paper, Fab, Box } from '@mui/material'
 import Add from '@mui/icons-material/Add';
+import axios from "axios";
 import PersonForm from "./components/PersonForm"; 
 import './App.css'
 import PersonList from "./components/PersonList";
 import PersonSearch from "./components/PersonSearch";
+import { useEffect } from "react";
 
-const initialPersons = [
-  {
-    id: 1,
-    nume: "Popescu Ion",
-    cnp: "1980101223344",
-    adresa: "Str. Lalelelor 10",
-    serie: "AB",
-    nrBuletin: "123456",
-    poza: null
-  },
-  {
-    id: 2,
-    nume: "Ionescu Maria",
-    cnp: "2970405332211",
-    adresa: "Str. Trandafirilor 3",
-    serie: "XY",
-    nrBuletin: "998877",
-    poza: null
-  }
-]; 
+// const initialPersons = [
+//   {
+//     id: 1,
+//     nume: "Popescu Ion",
+//     cnp: "1980101223344",
+//     adresa: "Str. Lalelelor 10",
+//     serie: "AB",
+//     nrBuletin: "123456",
+//     poza: null
+//   },
+//   {
+//     id: 2,
+//     nume: "Ionescu Maria",
+//     cnp: "2970405332211",
+//     adresa: "Str. Trandafirilor 3",
+//     serie: "XY",
+//     nrBuletin: "998877",
+//     poza: null
+//   }
+// ]; 
 
 function App() {
-  const [persons, setPersons] = useState(initialPersons);
+  const [persons, setPersons] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [personToEdit, setPersonToEdit] = useState(null);
+
+  const fetchPersons = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/persons');
+      setPersons(response.data);
+    } catch (error) {
+      console.error("vezi ca nu mere ->", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPersons();
+  }, []);
 
   const handleOpenAddPerson = () => {
     setPersonToEdit(null);
@@ -43,27 +58,37 @@ function App() {
     setIsFormOpen(true);
   }
 
-  const handleAddPerson = (PersonData) => {
+
+
+  const handleAddPerson = async (PersonData) => {
+    
     if(personToEdit){
-      const updatedPersons = persons.map(person => 
-        person.id === personToEdit.id ? { ...personToEdit, ...PersonData } : person
+       const updatedPersons = persons.map(person => 
+        (person._id === personToEdit._id || person.id === personToEdit.id) ? { ...personToEdit, ...PersonData } : person
       );
       setPersons(updatedPersons);
-    }else{
-      const newPerson = {
-      ...PersonData,
-      id: Date.now(),
-    };
-    setPersons([...persons, newPerson]);
+      setIsFormOpen(false);
+      setPersonToEdit(null);
     
+    } else {
+      try {
+        const response = await axios.post('http://localhost:3000/api/persons', PersonData);
+
+        const newPersonFromDB = response.data;
+        setPersons([...persons, newPersonFromDB]);
+        
+        setIsFormOpen(false); 
+      } catch (err) {
+        alert("Eroare la salvare: " + err.message);
+      }
     }
-    setIsFormOpen(false);
-    setPersonToEdit(null);
   };
+
   const handleDeletePerson = (idDeSters) => {
     if(window.confirm("Are you sure you want to delete this person?")){
-      const newPersonList = persons.filter(person => person.id !== idDeSters);
+      const newPersonList = persons.filter(person => person._id !== idDeSters && person.id !== idDeSters);
       setPersons(newPersonList)
+
     }
   }
 

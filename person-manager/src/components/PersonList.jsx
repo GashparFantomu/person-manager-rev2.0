@@ -31,7 +31,7 @@ const PersonList = ({persons, onDelete, onEdit}) =>{
   return (
     <Grid container spacing={2}>
       {persons.map((person) => (
-        <Grid item xs={12} sm={6} md={4} key={person.id}>
+        <Grid item xs={12} sm={6} md={4} key={person._id}>
           <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             <CardContent sx={{ flexGrow: 1 }}>
               

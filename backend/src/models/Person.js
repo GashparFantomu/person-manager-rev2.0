@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const personSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true
-    },
     nume: {
         type: String,
         required: true
@@ -29,7 +24,7 @@ const personSchema = new mongoose.Schema({
     },
     poza: {
         type: String,
-        default: null
+        default: ''
     }
 }, { timestamps: true });
 

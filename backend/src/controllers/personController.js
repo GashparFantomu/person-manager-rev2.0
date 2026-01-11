@@ -11,10 +11,9 @@ const getPersons = async (req, res) => {
 };
 
 const createPerson = async (req, res) => {
-    const { id, nume, cnp, adresa, varsta, serie, nrBuletin, poza } = req.body;
 
     try {
-        const person = await Person.create({ id, nume, cnp, adresa, varsta, serie, nrBuletin, poza });
+        const person = await Person.create(req.body);
         res.status(201).json(person); 
     } catch (error) {
         res.status(400).json({ message: error.message });
