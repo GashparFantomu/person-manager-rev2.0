@@ -3,7 +3,6 @@ import { Container, Typography, Paper, Fab, Box, Button } from '@mui/material'
 import Add from '@mui/icons-material/Add';
 import axios from "axios";
 import PersonForm from "./components/PersonForm"; 
-import './App.css'
 import PersonList from "./components/PersonList";
 import PersonSearch from "./components/PersonSearch";
 import { useEffect } from "react";

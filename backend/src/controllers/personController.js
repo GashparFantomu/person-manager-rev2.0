@@ -27,7 +27,7 @@ const deletePerson = async (req, res) => {
         if (!deletedPerson) {
             return res.status(404).json({ message: 'Persoana nu a fost găsita, he erased his trace (and his search history)' });
         }
-        res.status(200).json({ message: 'Persoana a fost stearsa cu succes yay' });
+        res.status(200).json({ message: 'Persoana a fost stearsa cu succes (but what about his search history?)' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
