@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"
-import { Container, Typography, Paper, Fab, Box } from '@mui/material'
+import { Container, Typography, Paper, Fab, Box, Button } from '@mui/material'
 import Add from '@mui/icons-material/Add';
 import axios from "axios";
 import PersonForm from "./components/PersonForm"; 
@@ -7,6 +7,7 @@ import './App.css'
 import PersonList from "./components/PersonList";
 import PersonSearch from "./components/PersonSearch";
 import { useEffect } from "react";
+import Login from './components/Login';
 
 // const initialPersons = [
 //   {
@@ -34,6 +35,7 @@ function App() {
   const [searchValue, setSearchValue] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [personToEdit, setPersonToEdit] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
   const fetchPersons = async () => {
     try {
@@ -45,8 +47,15 @@ function App() {
   };
 
   useEffect(() => {
-    fetchPersons();
-  }, []);
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      fetchPersons();
+    } else {
+      delete axios.defaults.headers.common['Authorization'];
+    }
+  }, [token]);
+
+  const handleLogin = () => setToken(localStorage.getItem('token'));
 
   const handleOpenAddPerson = () => {
     setPersonToEdit(null);
@@ -61,7 +70,6 @@ function App() {
 
 
   const handleAddPerson = async (PersonData) => {
-    
     if(personToEdit){
        try {
         const response = await axios.put(`http://localhost:3000/api/persons/${personToEdit._id}`, PersonData);
@@ -113,6 +121,12 @@ const filterPersons = useMemo(() => {
   });
 }, [persons, searchValue]);
 
+  if (!token) return <Login onLogin={handleLogin} />;
+const handleLogout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+};
+
   return (
     <>
       <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
@@ -120,6 +134,10 @@ const filterPersons = useMemo(() => {
           <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
             Person Manager
           </Typography>
+          <Button 
+            variant="outlined" 
+            color="error" 
+            onClick={handleLogout}>Logout</Button>
           <PersonSearch 
             searchValue={searchValue} 
             onChange={setSearchValue} 
