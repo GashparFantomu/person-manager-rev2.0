@@ -14,11 +14,11 @@ module.exports = async (req, res, next) => {
       next(); 
     } catch (error) {
       console.error(error);
-      res.status(401).json({ message: 'Nu ești autorizat, token invalid' });
+      res.status(401).json({ message: 'what the hell are you doing here?, token invalid' });
     }
   }
 
   if (!token) {
-    res.status(401).json({ message: 'Nu ești autorizat, lipsește tokenul' });
+    res.status(401).json({ message: 'BA!, lipsește tokenul' });
   }
 };

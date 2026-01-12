@@ -74,7 +74,7 @@ const PersonForm = ({open, onClose, onSubmit, initialData}) => {
     
     return (
       <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{initialData ? "Editează Persoană" : "Adaugă Persoană Nouă"}</DialogTitle>
+      <DialogTitle>{initialData ? "Edit" : "Add"}</DialogTitle>
       
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
@@ -154,7 +154,7 @@ const PersonForm = ({open, onClose, onSubmit, initialData}) => {
       <DialogActions>
         <Button onClick={onClose} color="error">Anulează</Button>
         <Button onClick={handleSubmit} variant="contained" color="primary">
-          {initialData ? "Salvează Modificările" : "Adaugă Persoană"}
+          {initialData ? "Save" : "Add"}
         </Button>
       </DialogActions>
         </Dialog>
